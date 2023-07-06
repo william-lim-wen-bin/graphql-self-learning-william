@@ -1,3 +1,4 @@
+const config = require("./conf/config");
 const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
 const schema = require("./schema/schema");
@@ -5,14 +6,19 @@ const mongoose = require("mongoose");
 
 const app = express();
 
-// Remember to replace <dbuser> and <dbpassword>
-mongoose.connect(
-  "mongodb+srv://<dbuser>:<dbpassword>@cluster0.p7ylozk.mongodb.net/"
+// Mongoose
+const mongoDbConnStr = "mongodb+srv://".concat(
+  config.mongoDbConfig.dbUser,
+  ":",
+  config.mongoDbConfig.dbPassword,
+  "@cluster0.p7ylozk.mongodb.net/"
 );
+mongoose.connect(mongoDbConnStr);
 mongoose.connection.once("open", () => {
   console.log("connected to database");
 });
 
+// GraphQL
 app.use(
   "/graphql",
   graphqlHTTP({
